@@ -1,0 +1,43 @@
+---
+database:
+  # PGObserver database
+  name: local_pgobserver_db
+  host: localhost
+  port: 5432
+
+  # Frontend credentials for PGObserver database. Read-only role is sufficient
+  frontend_user: pgobserver_frontend
+  frontend_password: pgobserver_frontend
+
+frontend:
+  port: 8080
+
+features:
+  show_hosts_page: true         # Should the /hosts page be accessible. Page shows host/database names for all hosts under monitoring
+                                # that could be desirable to hide. We assume a trusted environment by default though
+  allow_hot_queries: true       # Are direct queries to hosts under monitoring allowed. Direct queries are currently used
+                                # for determining index issues (invalids, duplicates, unused) and table/index bloat.
+                                # Bloat info requires a sprocs on the monitored host - see "sql/data_collection_helpers/bloated_tables_and_indexes.sql"
+  run_aggregations: false       # Optional. One can enable pre-aggregations (extra_features/aggregation_crons) for faster
+                                # main page loads when having dozens of hosts under monitoring
+  show_load: true               # CPU load graph + normalized sproc load graph. CPU graph needs a wrapper sproc on the monitored host
+  show_wal: true                # Graph of how much Write Ahead Log is being written per 15min
+  show_top_sprocs: true         # Top stored procedures by tot.runtime/calls/avg.time
+  show_top_statements: true     # Top statements by tot.runtime/calls/avg.time based on pg_stat_statements data. NB! Useful only from version 9.2 and up
+  show_db_size: true            # Total DB size + IUD counts
+  show_db_stats: true           # Exception, deadlock, connection, temp file counts per 15min
+  show_bgwriter_stats: false    # Graph based on pg_stat_bgwriter data, for advanced users
+  opengrok_baseurl: ""          # Instead of Opengrok any search engine/Web SCM could be used actually. Should be in form of "host.com/search?q="
+                                # Used to show links to sproc source from "sproc details" view
+
+oauth:                          # Optional
+  enable_oauth: false
+  client_id: ''
+  client_secret: ''
+  access_token_url: ''
+  authorize_url: ''
+  redirect_url: ''
+  # 43200 min = 1 month
+  session_timeout: 43200
+  client_details_s3_refresh_url: ''   # s3 url to a json file containing client_id and client_secret keys
+                                      # for cases where client_id/client_secret change periodically (e.g. in a STUPS env)
