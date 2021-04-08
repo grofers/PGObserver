@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:rolling
 
 RUN apt-get update && apt-get install -y git libpython2.7-dev libpq-dev python-psycopg2 python-pip
 
